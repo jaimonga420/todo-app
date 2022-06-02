@@ -40,6 +40,25 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw5yP4uqsfXRlfCHBnuevA1vXECuaBgB0",
+      authDomain: "todo-app-97e7c.firebaseapp.com",
+      projectId: "todo-app-97e7c",
+      storageBucket: "todo-app-97e7c.appspot.com",
+      messagingSenderId: "137393258610",
+      appId: "1:137393258610:web:fbd3deee8da4f7649c02eb"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
