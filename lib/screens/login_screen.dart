@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(color: Colors.black),
+          decoration: const BoxDecoration(color: Colors.black),
           width: deviceWidth,
           height: deviceHeight,
           child: Column(
@@ -44,13 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-              loginTextField(
+              
+              LoginTextField(
                 deviceWidth: deviceWidth,
                 label: 'Email',
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 30),
-                child: loginTextField(
+                child: LoginTextField(
                   deviceWidth: deviceWidth,
                   label: 'Password',
                 ),
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fixedSize: MaterialStateProperty.resolveWith<Size>(
                         (states) => Size(deviceWidth - 100, 50)),
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) => Color(0xfffd746c))),
+                        (states) => const Color(0xfffd746c))),
                 child: const Text('Sign In'),
               ),
               Row(
@@ -103,28 +104,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class loginTextField extends StatelessWidget {
-  const loginTextField(
+class LoginTextField extends StatelessWidget {
+  const LoginTextField(
       {Key? key, required this.deviceWidth, required this.label})
       : super(key: key);
 
   final double deviceWidth;
   final String label;
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 55,
       width: deviceWidth - 70,
       child: TextFormField(
+        style: const TextStyle(fontSize: 17, color: Colors.white),
+        cursorColor: Colors.white,
         decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(fontSize: 17, color: Colors.white),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(width: 1, color: Colors.grey),
-          ),
-        ),
+            labelText: label,
+            labelStyle: const TextStyle(fontSize: 17, color: Colors.white),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(width: 1, color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(width: 1, color: Colors.amber),
+            )),
       ),
     );
   }
