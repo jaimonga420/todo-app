@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../services/auth_services.dart';
+import '../screens/phoneauth_screen.dart';
 
 class LoginButton extends StatelessWidget {
   LoginButton(this.imagePath, this.buttonText, this.isGoogle, {Key? key})
@@ -21,7 +22,9 @@ class LoginButton extends StatelessWidget {
         firebase_auth.FirebaseAuth.instance;
     return InkWell(
       onTap: () async {
-        isGoogle ? await auth.googleSignIn(context) : null;
+        isGoogle
+            ? await auth.googleSignIn(context)
+            : Navigator.of(context).pushNamed(PhoneAuthScreen.routeName);
       },
       child: Container(
         width: deviceWidth - 60,

@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/phoneauth_screen.dart';
 import 'services/auth_services.dart';
 
 void main() async {
@@ -50,6 +51,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/homescreen': (context) => const HomeScreen(),
         '/signupscreen': (context) => const SignupScreen(),
+        '/phoneauthscreen' :(context) => const PhoneAuthScreen(),
       },
     );
   }
