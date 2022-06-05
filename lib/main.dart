@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
+import 'services/auth_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,26 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+Widget currentPage = SignupScreen();
+Auth auth = Auth();
+
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    checkLogin();
+    super.initState();
+  }
+
+  checkLogin() {
+    String token = auth.getToken().toString();
+    print(token);
+    if (token != null) {
+      setState(() {
+        currentPage = HomeScreen();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,9 +46,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SignupScreen(),
+      home: currentPage,
       routes: {
         '/homescreen': (context) => const HomeScreen(),
+        '/signupscreen': (context) => const SignupScreen(),
       },
     );
   }

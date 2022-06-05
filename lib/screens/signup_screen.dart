@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../widgets/login_button.dart';
 import '../screens/home_screen.dart';
+import '../services/auth_services.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
+
+  static const routeName = '/signupscreen';
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -39,13 +42,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 15, bottom: 15),
+              Padding(
+                padding: const EdgeInsets.only(top: 15, bottom: 15),
                 child: LoginButton(
-                    'assets/icons/google.svg', 'Continue with Google'),
+                    'assets/icons/google.svg', 'Continue with Google', true),
               ),
-              const LoginButton(
-                  'assets/icons/phone.svg', 'Continue with Phone'),
+              LoginButton(
+                  'assets/icons/phone.svg', 'Continue with Phone', false),
               const Padding(
                 padding: EdgeInsets.only(top: 15, bottom: 15),
                 child: Text(
