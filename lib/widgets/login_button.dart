@@ -17,7 +17,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
-    final deviceHeight = MediaQuery.of(context).size.height;
+
     firebase_auth.FirebaseAuth firebaseAuth =
         firebase_auth.FirebaseAuth.instance;
     return InkWell(

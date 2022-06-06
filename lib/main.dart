@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-Widget currentPage = SignupScreen();
+Widget currentPage = const SignupScreen();
 Auth auth = Auth();
 
 class _MyAppState extends State<MyApp> {
@@ -31,10 +31,11 @@ class _MyAppState extends State<MyApp> {
 
   checkLogin() {
     String token = auth.getToken().toString();
-    print(token);
+   
+    // ignore: unnecessary_null_comparison
     if (token != null) {
       setState(() {
-        currentPage = HomeScreen();
+        currentPage = const HomeScreen();
       });
     }
   }

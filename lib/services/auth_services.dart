@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,6 +8,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../screens/home_screen.dart';
 
 class Auth {
+  void openSnackbar(BuildContext context, String msg) {
+    final snackbar = SnackBar(content: Text(msg));
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'email',
@@ -38,8 +45,7 @@ class Auth {
         }
       }
     } catch (e) {
-      final errorSnackbar = SnackBar(content: Text(e.toString()));
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
+      openSnackbar(context, e.toString());
     }
   }
 
@@ -53,13 +59,58 @@ class Auth {
     return await storage.read(key: 'token');
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     try {
       await _googleSignIn.signOut();
       await auth.signOut();
       await storage.delete(key: 'token');
     } catch (e) {
-      debugPrint(e.toString());
+      openSnackbar(context, e.toString());
+    }
+  }
+
+  Future verifyOtp(
+      BuildContext context, String phoneNumber, Function setData) async {
+    PhoneVerificationCompleted verificationCompleted =
+        (PhoneAuthCredential phoneAuthCredential) async {
+      openSnackbar(context, 'Verification Completed.');
+    };
+    PhoneVerificationFailed verificationFailed =
+        (FirebaseAuthException exception) {
+      openSnackbar(context, exception.toString());
+    };
+    PhoneCodeSent codeSent =
+        (String verificationId, [int? forceResendingToken]) {
+      setData(verificationId);
+      openSnackbar(context, 'An OTP has been sent.');
+    };
+    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
+        (String verificationId) {
+      openSnackbar(context, 'Timeout');
+    };
+
+    try {
+      await auth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+    } catch (e) {
+      openSnackbar(context, e.toString());
+    }
+  }
+
+  void signInWithPhone(BuildContext context, verificationId, smsCode) async {
+    try {
+      AuthCredential credentials = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: smsCode);
+      UserCredential userCredentials =
+          await auth.signInWithCredential(credentials);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => false);
+    } catch (e) {
+      openSnackbar(context, e.toString());
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:todo_app/services/auth_services.dart';
 
 class PhoneAuthScreen extends StatefulWidget {
   const PhoneAuthScreen({Key? key}) : super(key: key);
@@ -18,21 +19,34 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   int timeStart = 30;
   bool isWaiting = false;
   String btnName = 'Send';
+  TextEditingController phoneController = TextEditingController();
+  final auth = Auth();
+  String finalVerificationId = '';
+  String smsCode = '';
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
-    Timer _timer = Timer.periodic(oneSec, (timer) {
+    Timer timer = Timer.periodic(oneSec, (timer) {
       if (timeStart == 0) {
         setState(() {
           isWaiting = false;
           timer.cancel();
         });
       } else {
-        setState(() {
-          timeStart--;
-        });
+        if (mounted) {
+          setState(() {
+            timeStart--;
+          });
+        }
       }
     });
+  }
+
+  void setData(String verificationId) {
+    setState(() {
+      finalVerificationId = verificationId;
+    });
+    startTimer();
   }
 
   @override
@@ -75,7 +89,9 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
                         color: Colors.yellowAccent, fontSize: 15)),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  auth.signInWithPhone(context, finalVerificationId, smsCode);
+                },
                 style: ButtonStyle(
                     minimumSize: MaterialStateProperty.resolveWith<Size>(
                         (states) => Size(deviceWidth - 60, 60)),
@@ -98,7 +114,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
 
   Widget phoneField() {
     final deviceWidth = MediaQuery.of(context).size.width;
-    final deviceHeight = MediaQuery.of(context).size.height;
     return Container(
       width: deviceWidth - 40,
       height: 60,
@@ -106,13 +121,16 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
           color: const Color(0xff1d1d1d),
           borderRadius: BorderRadius.circular(15)),
       child: TextFormField(
+        style: const TextStyle(color: Colors.white, fontSize: 17),
+        controller: phoneController,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
+            fillColor: Colors.white,
             border: InputBorder.none,
             hintText: 'Phone number',
             hintStyle: const TextStyle(color: Colors.white54, fontSize: 17),
             contentPadding:
-                const EdgeInsets.symmetric(vertical: 19, horizontal: 8),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
             prefixIcon: const Padding(
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Text(
@@ -121,13 +139,14 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
               ),
             ),
             suffixIcon: TextButton(
-                onPressed: () {
-                  startTimer();
+                onPressed: () async {
                   setState(() {
                     timeStart = 30;
                     isWaiting = true;
                     btnName = 'Resend';
                   });
+                  auth.verifyOtp(
+                      context, '+91 ${phoneController.text}', setData);
                 },
                 child: Text(
                   btnName,
@@ -145,15 +164,16 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
       length: 6,
       width: MediaQuery.of(context).size.width - 40,
       otpFieldStyle: OtpFieldStyle(
-        backgroundColor: Color(0xff1d1d1d),
-        borderColor: Colors.white,
+        backgroundColor: const Color(0xff1d1d1d),
       ),
       fieldWidth: 50,
-      style: TextStyle(fontSize: 17, color: Colors.white),
+      style: const TextStyle(fontSize: 17, color: Colors.white),
       textFieldAlignment: MainAxisAlignment.spaceAround,
       fieldStyle: FieldStyle.underline,
       onCompleted: (pin) {
-        print("Completed: " + pin);
+        setState(() {
+          smsCode = pin;
+        });
       },
     );
   }

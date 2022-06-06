@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 import '../services/auth_services.dart';
@@ -19,18 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home page'),
+        title: const Text('Home page'),
         actions: [
           IconButton(
               onPressed: () async {
-                await auth.logout();
+                await auth.logout(context);
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     SignupScreen.routeName, (route) => false);
               },
               icon: const Icon(Icons.logout))
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Text('Home Screen'),
       ),
     );
