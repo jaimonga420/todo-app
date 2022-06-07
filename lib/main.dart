@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/addtodo_screen.dart';
 import 'screens/phoneauth_screen.dart';
 import 'services/auth_services.dart';
 
@@ -31,7 +32,7 @@ class _MyAppState extends State<MyApp> {
 
   checkLogin() {
     String token = auth.getToken().toString();
-   
+
     // ignore: unnecessary_null_comparison
     if (token != null) {
       setState(() {
@@ -48,11 +49,11 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: currentPage,
+      home: AddTodoScreen(),
       routes: {
         '/homescreen': (context) => const HomeScreen(),
         '/signupscreen': (context) => const SignupScreen(),
-        '/phoneauthscreen' :(context) => const PhoneAuthScreen(),
+        '/phoneauthscreen': (context) => const PhoneAuthScreen(),
       },
     );
   }
