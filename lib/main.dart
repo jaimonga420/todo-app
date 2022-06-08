@@ -49,11 +49,12 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AddTodoScreen(),
+      home: HomeScreen(),
       routes: {
         '/homescreen': (context) => const HomeScreen(),
         '/signupscreen': (context) => const SignupScreen(),
         '/phoneauthscreen': (context) => const PhoneAuthScreen(),
+        '/addtodoscreen': (context) => const AddTodoScreen(),
       },
     );
   }

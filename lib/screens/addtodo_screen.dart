@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AddTodoScreen extends StatefulWidget {
   const AddTodoScreen({Key? key}) : super(key: key);
 
+  static const routeName = "/addtodoscreen";
+
   @override
   State<AddTodoScreen> createState() => _AddTodoScreenState();
 }
@@ -27,7 +29,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               IconButton(
                   color: Colors.white,
                   iconSize: 28,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   icon: const Icon(Icons.arrow_back_ios)),
               const Text(
                 'Create',
