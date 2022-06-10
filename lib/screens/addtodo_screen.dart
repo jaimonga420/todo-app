@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddTodoScreen extends StatefulWidget {
@@ -10,6 +11,11 @@ class AddTodoScreen extends StatefulWidget {
 }
 
 class _AddTodoScreenState extends State<AddTodoScreen> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+  String taskType = '';
+  String taskCategory = '';
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
@@ -61,10 +67,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   height: 50,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color(0xff2a2e3d),
+                    color: const Color(0xff2a2e3d),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    controller: _titleController,
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -80,9 +88,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 padding: const EdgeInsets.only(top: 10, bottom: 30),
                 child: Row(
                   children: [
-                    chipData('Important', 0xff2664fa),
+                    typeSelect('Important', 0xff2664fa),
                     const SizedBox(width: 20),
-                    chipData('Planned', 0xff2bc8d9),
+                    typeSelect('Planned', 0xff2bc8d9),
                   ],
                 ),
               ),
@@ -97,6 +105,8 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    controller: _descController,
                     maxLines: 12,
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(
@@ -114,37 +124,45 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 padding: const EdgeInsets.only(top: 10, bottom: 5),
                 child: Row(
                   children: [
-                    chipData('Food', 0xffff6d6e),
+                    categorySelect('Food', 0xffff6d6e),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: chipData('Workout', 0xfff39732),
+                      child: categorySelect('Workout', 0xfff39732),
                     ),
-                    chipData('Work', 0xff6557ff),
+                    categorySelect('Work', 0xff6557ff),
                   ],
                 ),
               ),
               Row(
                 children: [
-                  chipData('Design', 0xff234ebd),
+                  categorySelect('Design', 0xff234ebd),
                   const SizedBox(
                     width: 20,
                   ),
-                  chipData('Run', 0xff2bc8d9),
+                  categorySelect('Run', 0xff2bc8d9),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 50, bottom: 30),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    FirebaseFirestore.instance.collection('todos').add({
+                      'title': _titleController.text,
+                      'type': taskType,
+                      'category': taskCategory,
+                      'description': _descController.text
+                    });
+                    Navigator.pop(context);
+                  },
                   style: ButtonStyle(
                       shape: MaterialStateProperty.resolveWith((states) =>
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (states) => Color(0xff8a32f1)),
+                          (states) => const Color(0xff8a32f1)),
                       minimumSize: MaterialStateProperty.resolveWith<Size>(
-                          (states) => Size(double.maxFinite, 50))),
-                  child: Text(
+                          (states) => const Size(double.maxFinite, 50))),
+                  child: const Text(
                     'Add Todo',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
@@ -169,16 +187,47 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     );
   }
 
-  Widget chipData(String label, int color) {
-    return Chip(
-      backgroundColor: Color(color),
-      labelPadding: const EdgeInsets.symmetric(vertical: 3.8, horizontal: 17),
-      label: Text(
-        label,
-        style: const TextStyle(
-            color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500),
+  Widget typeSelect(String label, int color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          taskType = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: label == taskType ? Colors.white : Color(color),
+        labelPadding: const EdgeInsets.symmetric(vertical: 3.8, horizontal: 17),
+        label: Text(
+          label,
+          style: TextStyle(
+              color: label == taskType ? Colors.black : Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w500),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+  Widget categorySelect(String label, int color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          taskCategory = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: label == taskCategory ? Colors.white : Color(color),
+        labelPadding: const EdgeInsets.symmetric(vertical: 3.8, horizontal: 17),
+        label: Text(
+          label,
+          style: TextStyle(
+              color: label == taskCategory ? Colors.black : Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w500),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 }

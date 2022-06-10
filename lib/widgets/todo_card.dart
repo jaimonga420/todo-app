@@ -27,7 +27,7 @@ class TodoCard extends StatelessWidget {
       child: Row(
         children: [
           Theme(
-            data: ThemeData(unselectedWidgetColor: Color(0xff5e616a)),
+            data: ThemeData(unselectedWidgetColor: const Color(0xff5e616a)),
             child: Transform.scale(
               scale: 1.3,
               child: Checkbox(
@@ -44,7 +44,7 @@ class TodoCard extends StatelessWidget {
               child: Container(
             height: 75,
             child: Card(
-              color: Color(0xff2a2e3d),
+              color: const Color(0xff2a2e3d),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               child: Row(
@@ -72,7 +72,7 @@ class TodoCard extends StatelessWidget {
                       letterSpacing: 1,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Text(
                     time,
                     style: const TextStyle(
