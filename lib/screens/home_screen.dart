@@ -3,8 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'single_todo_screen.dart';
 import '../services/auth_services.dart';
-import './signup_screen.dart';
 import '../widgets/bottom_bar.dart';
 import '../widgets/todo_card.dart';
 
@@ -65,12 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CircularProgressIndicator(),
                 );
               }
+              final documents = snapshot.data.docs;
               return ListView.builder(
-                  itemCount: snapshot.data.docs.length,
+                  itemCount: documents.length,
                   itemBuilder: (context, index) {
                     IconData icondata;
                     Color iconColor;
-                    switch (snapshot.data.docs[index]['category']) {
+                    switch (documents[index]['category']) {
                       case 'Food':
                         icondata = Icons.food_bank;
                         iconColor = const Color(0xffff6d6e);
@@ -96,14 +97,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         iconColor = const Color(0xff6557ff);
                         break;
                     }
-                    return TodoCard(
-                        title: snapshot.data.docs[index]['title'],
-                        iconData: icondata,
-                        iconBgColor: Colors.white,
-                        iconColor: iconColor,
-                        time: "7:00 AM",
-                        check: true,
-                        selected: true);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return SingleTodoScreen(
+                            documents: documents[index],
+                          );
+                        }));
+                      },
+                      child: TodoCard(
+                          title: documents[index]['title'],
+                          iconData: icondata,
+                          iconBgColor: Colors.white,
+                          iconColor: iconColor,
+                          time: "7:00 AM",
+                          check: true,
+                          selected: true),
+                    );
                   });
             })),
       ),
@@ -111,11 +122,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// IconButton(
-//               onPressed: () async {
-//                 await auth.logout(context);
-//                 Navigator.of(context).pushNamedAndRemoveUntil(
-//                     SignupScreen.routeName, (route) => false);
-//               },
-//               icon: const Icon(Icons.logout))
