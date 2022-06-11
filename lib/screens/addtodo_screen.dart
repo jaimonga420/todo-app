@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddTodoScreen extends StatefulWidget {
   const AddTodoScreen({Key? key}) : super(key: key);
@@ -74,6 +75,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     textCapitalization: TextCapitalization.sentences,
                     controller: _titleController,
                     cursorColor: Colors.white,
+                    inputFormatters: [LengthLimitingTextInputFormatter(13)],
                     decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 15, right: 15),
@@ -113,7 +115,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(
                             left: 15, right: 15, top: 15, bottom: 15),
-                        hintText: 'Enter a task',
+                        hintText: 'Enter task description',
                         hintStyle: TextStyle(color: Colors.grey)),
                     style: const TextStyle(color: Colors.white),
                   ),
