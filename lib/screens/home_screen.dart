@@ -21,6 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Auth auth = Auth();
   final Stream<QuerySnapshot> _stream =
       FirebaseFirestore.instance.collection('todos').snapshots();
+  List<Select> selectedTodos = [];
+
+  void onCheckChange(int index) {
+    setState(() {
+      selectedTodos[index].checkValue = !selectedTodos[index].checkValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,27 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(
               color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          CircleAvatar(
-            backgroundColor: Colors.transparent,
-            child: Image.asset('assets/images/profile.png'),
-          )
-        ],
-        bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(35),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 22),
-                child: Text(
-                  'Monday 21',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 33),
-                ),
-              ),
-            )),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -97,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         iconColor = const Color(0xff6557ff);
                         break;
                     }
+                    selectedTodos.add(
+                        Select(id: documents[index].id, checkValue: false));
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context)
@@ -112,7 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           iconBgColor: Colors.white,
                           iconColor: iconColor,
                           time: "7:00 AM",
-                          check: true,
+                          check: selectedTodos[index].checkValue,
+                          index: index,
+                          onCheckChange: onCheckChange,
                           selected: true),
                     );
                   });
@@ -121,4 +111,10 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: const BottomBar(),
     );
   }
+}
+
+class Select {
+  String id;
+  bool checkValue = false;
+  Select({required this.id, required this.checkValue});
 }

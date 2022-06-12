@@ -53,15 +53,45 @@ class _SingleTodoScreenState extends State<SingleTodoScreen> {
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.arrow_back_ios)),
-                  IconButton(
-                      color: _isEditing ? Colors.white : Colors.red,
-                      iconSize: 28,
-                      onPressed: () {
-                        setState(() {
-                          _isEditing = !_isEditing;
-                        });
-                      },
-                      icon: _isEditing ? Icon(Icons.check) : Icon(Icons.edit)),
+                  Row(
+                    children: [
+                      IconButton(
+                          color: Colors.red,
+                          iconSize: 28,
+                          onPressed: () {
+                            FirebaseFirestore.instance
+                                .collection('todos')
+                                .doc(widget.documents.id)
+                                .delete();
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.delete)),
+                      IconButton(
+                          color: _isEditing ? Colors.white : Colors.red,
+                          iconSize: 28,
+                          onPressed: !_isEditing
+                              ? () {
+                                  setState(() {
+                                    _isEditing = !_isEditing;
+                                  });
+                                }
+                              : () {
+                                  FirebaseFirestore.instance
+                                      .collection('todos')
+                                      .doc(widget.documents.id)
+                                      .update({
+                                    'title': _titleController!.text,
+                                    'type': taskType,
+                                    'category': taskCategory,
+                                    'description': _descController!.text
+                                  });
+                                  Navigator.pop(context);
+                                },
+                          icon: _isEditing
+                              ? Icon(Icons.check)
+                              : Icon(Icons.edit)),
+                    ],
+                  ),
                 ],
               ),
               Text(
@@ -161,41 +191,6 @@ class _SingleTodoScreenState extends State<SingleTodoScreen> {
                   categorySelect('Run', 0xff2bc8d9),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 15),
-                child: _isEditing
-                    ? ElevatedButton(
-                        onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('todos')
-                              .doc(widget.documents.id)
-                              .update({
-                            'title': _titleController!.text,
-                            'type': taskType,
-                            'category': taskCategory,
-                            'description': _descController!.text
-                          });
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.resolveWith((states) =>
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                                    (states) => const Color(0xff8a32f1)),
-                            minimumSize:
-                                MaterialStateProperty.resolveWith<Size>(
-                                    (states) =>
-                                        const Size(double.maxFinite, 50))),
-                        child: const Text(
-                          'Update Todo',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      )
-                    : null,
-              )
             ],
           ),
         )),

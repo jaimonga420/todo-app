@@ -10,6 +10,8 @@ class TodoCard extends StatelessWidget {
     required this.time,
     required this.check,
     required this.selected,
+    required this.onCheckChange,
+    required this.index,
   }) : super(key: key);
 
   final String title;
@@ -19,7 +21,8 @@ class TodoCard extends StatelessWidget {
   final String time;
   final bool check;
   final bool selected;
-
+  final Function onCheckChange;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +37,9 @@ class TodoCard extends StatelessWidget {
                 value: check,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  onCheckChange(index);
+                },
                 activeColor: const Color(0xff6cf8a9),
                 checkColor: const Color(0xff0e3e26),
               ),
